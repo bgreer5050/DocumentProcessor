@@ -1,4 +1,5 @@
 ﻿using FileProcessor.Interfaces;
+using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System;
@@ -58,6 +59,26 @@ namespace FileProcessor
             System.Diagnostics
                 .Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", $@"{file.FullName}");
 
+        }
+
+        public void AddTextToPDFFile(FileInfo fileInfo, DirectoryInfo directoryInfo)
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            PdfDocument PDFDoc = PdfReader.Open(fileInfo.FullName, PdfDocumentOpenMode.Import);
+            PdfDocument PDFNewDoc = new PdfDocument();
+
+            for (int Pg = 0; Pg < PDFDoc.Pages.Count; Pg++)
+            {
+                PdfPage pp = PDFNewDoc.AddPage(PDFDoc.Pages[Pg]);
+
+                XGraphics gfx = XGraphics.FromPdfPage(pp);
+                XFont font = new XFont("Arial", 30, XFontStyle.Italic);
+                gfx.DrawString("Hello, World!", font, XBrushes.Black, new XRect(0, 0, pp.Width, pp.Height), XStringFormats.Center);
+
+            }
+
+            string destFilePath = Path.Combine(directoryInfo.FullName, "TEST.PDF");
+            PDFNewDoc.Save(destFilePath);
         }
     }
 }

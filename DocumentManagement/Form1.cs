@@ -1,4 +1,5 @@
-﻿using PdfSharpCore.Pdf;
+﻿using FileProcessor;
+using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System;
 using System.Collections.Generic;
@@ -44,11 +45,16 @@ namespace DocumentManagement
 
             var _file = files.FirstOrDefault();
 
+            PDFProcessor pDFProcessor = new PDFProcessor();
+            pDFProcessor.AddTextToPDFFile(_file, directoryInfo);
+
+
             //Mark files as being processed
             var newFileName = Path.Combine(directoryInfo.FullName, $"{_file.Name}_REVIEW{_file.Extension}");
             File.Copy(_file.FullName, newFileName);
 
 
+           
             //foreach (var f in allFiles)
             //{
             //    if (!f.Name.Contains("reviewed"))
